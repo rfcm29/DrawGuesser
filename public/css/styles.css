@@ -1,0 +1,24 @@
+html, body{
+    background-color: white;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#gameArea{
+    height: 100%;
+    width: 100%;
+}
+
+.title{
+    margin: 0px auto;
+    text-align: center;
+    width: 100%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.buttons{
+    width: 100%;
+    text-align: center;
+}
