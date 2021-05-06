@@ -11,14 +11,62 @@ html, body{
     width: 100%;
 }
 
-.title{
+.title-wrapper, .newGameWrapper{
+    height: 50%;
+    width: 96%;
+    margin: auto;
+}
+
+.title, .gameInfo{
     margin: 0px auto;
-    text-align: center;
     width: 100%;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+}
+
+.lobbyInfo{
+    margin: 0px auto;
+    width: 100%;
+    text-align: center;
+    align-content: center;
+    display: flex;
+}
+
+.lobby2{
+    align-self: center;
+    width: 100%;
 }
 
 .buttons{
     width: 100%;
     text-align: center;
+}
+
+.btn {
+    display: inline-block;
+    height: 100%;
+    width: 40%;
+    padding: 15px 32px;
+    margin-bottom: 20px;
+    color: white;
+    background-color: #FAD33B;
+    font-size: 2vw;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 50px;
+}
+
+.btn:hover{
+    color: darkgrey;
+}
+
+.userTable, th, td{    
+    border: 2px solid #FAD33B;
+    border-collapse: collapse;
+    padding: 15px;
+    width:50%;
+}
+
+.userTable th{
+    background-color: #FAD33B;
 }
