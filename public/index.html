@@ -13,28 +13,57 @@
 
     <div id="gameArea">
 
-        <div class="joinGameWrapper">
-            <div class="left">
-                <img src="img/logo.png" width="100%">
-            </div>
-            <div class="right">
-                <p class="lobbyNum">NÚMERO DO LOBBY</p>
-                <input id="inputLobbyNum" class="input" type="text" />
-                <div class="buttons">
-                    <button id="btnStartGame" class="btn">COMEÇAR</button>
+        <!-- The scripts go here! -->
+
+    </div>           
+
+    
+        <script id="play-screen" type="text/template">
+            <div class="playerCanvasWrapper">
+                <p class="word">BANANA</p>
+                <div class="drawArea">
+                    <div class="left">
+                        <canvas id="drawCanvas"></canvas>
+                    </div>
+                    <div class="right">
+                        <p>COR</p>
+                        <form>
+                            <input type="color" id="drawColor" value="#E1BD35">
+                            <br>
+                            <input type="radio" id="pencil" name="tool" value="pencilOn">
+                            <label>LÁPIS</label>
+                            <br>
+                            <input type="radio" id="eraser" name="tool" value="eraserOn">
+                            <label>BORRACHA</label>
+                            <br>
+                        </form>
+                        
+                        <button id="btnClearCanvas" class="btn">LIMPAR TELA</button>
+
+                    </div>
                 </div>
             </div>
-        </div>
-
-    <!-- 
-        <script id="join-game-template">
-
         </script>
 
-        <script id="new-game-template">
+        <script id="join-game-template" type="text/template">
+            <div class="joinGameWrapper">
+                <div class="left">
+                    <img src="img/logo.png" width="100%">
+                </div>
+                <div class="right">
+                    <p class="lobbyNum">NÚMERO DO LOBBY</p>
+                    <input id="inputLobbyNum" class="input" type="text"/>
+                    <div class="buttons">
+                        <button id="btnStartGame" class="btn">COMEÇAR</button>
+                    </div>
+                </div>
+            </div>
+        </script>
+
+        <script id="new-game-template" type="text/template">
             <div class="newGameWrapper">
                 <div class="gameInfo">
-                    <img src="img/logo.png"  width="40%">
+                    <img src="img/logo.png"  width="50%">
                     <p id="link">LINK PARA O TELEMOVEL</p>
                     <p class="lobbyNum">NUMERO DO LOBBY</p>
                 </div>
@@ -55,7 +84,7 @@
             </div>
         </script> 
 
-        <script id="homepage-template">
+        <script id="homepage-template" type="text/template">
             <div class="title-wrapper">
                 <div class="title">
                     <img src="img/logo.png"  width="60%">
@@ -68,9 +97,8 @@
                 </div>
             </div>
         </script> 
-    -->
 
-    </div>
+    
 
     
 
