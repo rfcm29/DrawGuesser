@@ -1,8 +1,13 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
+var express = require('express');
+var path = require('path');
+var app = express();
+var game = require('./DGgame.js');
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname,'public')));
 
-server.listen(8081);
+var server = require('http').createServer(app).listen(process.env.PORT || 8080);
+var io = require('socket.io')(server);
+
+io.sockets.on('connection', function (socket) {
+    game.initGame(io, socket);
+});

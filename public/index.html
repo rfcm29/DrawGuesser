@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -54,7 +54,7 @@
                     <p class="lobbyNum">NÚMERO DO LOBBY</p>
                     <input id="inputLobbyNum" class="input" type="text"/>
                     <div class="buttons">
-                        <button id="btnStartGame" class="btn">COMEÇAR</button>
+                        <button id="btnJoin" class="btn">COMEÇAR</button>
                     </div>
                 </div>
             </div>
@@ -64,13 +64,13 @@
             <div class="newGameWrapper">
                 <div class="gameInfo">
                     <img src="img/logo.png"  width="50%">
-                    <p id="link">LINK PARA O TELEMOVEL</p>
-                    <p class="lobbyNum">NUMERO DO LOBBY</p>
+                    <p id="gameURL">LINK PARA O TELEMOVEL</p>
+                    <p id="lobbyNum" class="lobbyNum">NUMERO DO LOBBY</p>
                 </div>
                 <div class="lobbyUsers">
                         <table class="userTable">
                             <tr>
-                                <th>LOBBY X</th>
+                                <th>JOGADORES</th>
                             </tr>
         
                             <tr>
@@ -98,10 +98,10 @@
             </div>
         </script> 
 
-    
+        <script src="libs/jquery-2.0.2.min.js"></script>
 
+        <script src="/socket.io/socket.io.js"></script>
     
-
-    
+        <script src="client.js"></script>
 </body>
 </html>
