@@ -70,7 +70,7 @@ jQuery(function($){
             App.$gameArea = $('#gameArea');
             App.$homePage = $('#homepage-template').html();
             App.$newGame = $('#new-game-template').html();
-            App.$joinGame = $('join-game-template').html();
+            App.$joinGame = $('#join-game-template').html();
         },
 
         bindevents: function() {
@@ -78,7 +78,8 @@ jQuery(function($){
             //App.$doc.on('click', '#btnInstructions', App.Host.onInstructionsClick);
             //App.$doc.on('click', '#btnStartGame', App.Host.onStartGameClick);
 
-            //App.$doc.on('click', '#btnJoin', App.Player.onJoinClick);
+            App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
+            App.$doc.on('click', '#btnJoin', App.Player.onJoinLobbyClick)
         },
 
         showInitScreen: function() {
@@ -111,6 +112,15 @@ jQuery(function($){
                 $('#lobbyNum').text(App.gameId);
             }
 
+        },
+
+        Player : {
+            hostSocketId: '',
+            myName: '',
+
+            onJoinClick : function() {
+                App.$gameArea.html(App.$joinGame);
+            }
         }
     };
 
