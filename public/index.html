@@ -13,10 +13,96 @@
 
     <div id="gameArea">
 
-        <!-- The scripts go here! -->
+        <!-- The scripts go here! -->        
+        
+        
 
-    </div>           
+    </div>   
+
+    <script id="choose-word-template" type="text/template">
+        <div class="chooseWordWrapper">
+            <div class="title">
+                <img src="img/logo.png"  width="60%">
+            </div>
+            <div class="buttons">
+                <button id="btnGetWord1" class="btn">PALAVRA 1</button>
+                <br>
+                <button id="btnGetWord2" class="btn">PALAVRA 2</button>
+                <br>
+                <button id="btnGetWord3" class="btn">PALAVRA 3</button>
+            </div>
+        </div>
+    </script>
     
+        <script id="player-guess-template" type="text/template">
+            <div class="writeWordWrapper">
+                <div class="guessAttempts">
+                    <span class="dot" id="dot1"></span>
+                    <span class="dot" id="dot2"></span>
+                    <span class="dot" id="dot3"></span>
+                </div>
+
+                <div class="buttons">
+                    <br>
+                    <input id="inputGuessWord" class="input" type="text"/>
+                    <br>
+                    <button id="btnGuessWord" class="btn">TENTAR</button>
+                </div>
+            </div>
+        </script>
+    
+        <script id="guess-word-template" type="text/template">
+            <div class="playerGuessWrapper">
+                <p class="word">BANANA</p>
+                <div class="guessArea">
+                    <div class="left">
+                        <canvas id="guessCanvas"></canvas>
+                    </div>
+                    <div class="right">
+                        <div class="player1">
+                            <p>NOME JOGADOR</p>
+                            <div class="attempts">
+                                <span class="dot" id="dot1"></span>
+                                <span class="dot" id="dot2"></span>
+                                <span class="dot" id="dot3"></span>
+                            </div>
+                        </div>
+                        <div class="player2">
+                            <p>NOME JOGADOR</p>
+                            <div class="attempts">
+                                <span class="dot" id="dot1"></span>
+                                <span class="dot" id="dot2"></span>
+                                <span class="dot" id="dot3"></span>
+                            </div>
+                        </div>
+                        <div class="player3">
+                            <p>NOME JOGADOR</p>
+                            <div class="attempts">
+                                <span class="dot" id="dot1"></span>
+                                <span class="dot" id="dot2"></span>
+                                <span class="dot" id="dot3"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>
+
+        <script id="new-word-template" type="text/template">
+            <div class="newWordWrapper">
+                <div class="title">
+                    <img src="img/logo.png"  width="60%">
+                </div>
+                <div class="newWord">
+                    <button id="btnNewWord1" class="btn">PALAVRA 1</button>
+                    <br>
+                    <button id="btnNewWord2" class="btn">PALAVRA 2</button>
+                    <br>
+                    <button id="btnNewWord3" class="btn">PALAVRA 3</button>
+                </div>
+            </div>  
+        </script>
+
         <script id="play-screen" type="text/template">
             <div class="playerCanvasWrapper">
                 <p class="word">BANANA</p>
@@ -36,9 +122,7 @@
                             <label>BORRACHA</label>
                             <br>
                         </form>
-                        
                         <button id="btnClearCanvas" class="btn">LIMPAR TELA</button>
-
                     </div>
                 </div>
             </div>
