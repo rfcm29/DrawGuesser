@@ -81,8 +81,8 @@ html, body{
     text-align: center;
 }
 
-.lobbyNum{
-    font-size: 2vw;
+.lobbyNum, .playerName{
+    font-size: 3vw;
     margin: 0px;
     margin-bottom: 20px;
 }
@@ -106,7 +106,7 @@ html, body{
 }
 
 .link{
-    font-size: 6vw;
+    font-size: 5vw;
     margin: 0px;
 }
 
@@ -125,7 +125,6 @@ html, body{
 
 .userTable th{
     background-color: #FAD33B;
-    color: white;
 }
 
 .left{
