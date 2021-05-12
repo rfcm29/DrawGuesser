@@ -47,3 +47,10 @@ function playerJoinGame(data) {
         //this.emit('error', {message: "This room does not exist."});
     //}
 }
+
+var wordPool = [
+    "bola", "banana", "casa", "computador", "telemovel", "chavena", "gritar", "andar", "pensar",
+    "dormir", "escrever", "dor"
+];
+
+var chosenWords = [];
