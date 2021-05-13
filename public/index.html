@@ -15,17 +15,17 @@
 
         <!-- The scripts go here! -->        
         
+                
+
+    </div>   
+
+    <script id="begin-template" type="text/template">
         <div class="beginWrapper">
             <div class="title">
                 <img src="img/logo.png"  width="60%">
             </div>
             <p>O JOGO VAI COMEÇAR!</p>
-        </div>        
-
-    </div>   
-
-    <script id="begin-template">
-
+        </div>
     </script>
 
     <script id="choose-word-template" type="text/template">
@@ -34,11 +34,11 @@
                 <img src="img/logo.png"  width="60%">
             </div>
             <div class="buttons">
-                <button id="btnGetWord1" class="btn">PALAVRA 1</button>
+                <button id="btnGetWord1" class="btnEscolha btn">PALAVRA 1</button>
                 <br>
-                <button id="btnGetWord2" class="btn">PALAVRA 2</button>
+                <button id="btnGetWord2" class="btnEscolha btn">PALAVRA 2</button>
                 <br>
-                <button id="btnGetWord3" class="btn">PALAVRA 3</button>
+                <button id="btnGetWord3" class="btnEscolha btn">PALAVRA 3</button>
             </div>
         </div>
     </script>
@@ -114,7 +114,7 @@
 
         <script id="play-screen" type="text/template">
             <div class="playerCanvasWrapper">
-                <p class="word">BANANA</p>
+                <div id="word" class="word">BANANA</div>
                 <div class="drawArea">
                     <div class="left">
                         <canvas id="drawCanvas"></canvas>

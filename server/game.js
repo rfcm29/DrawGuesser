@@ -8,6 +8,7 @@ exports.initGame = function(socketIo, socket){
 
     gameSocket.on('hostCreateLobby', hostCreateLobby);
     gameSocket.on('roomFull', onRoomFull);
+    gameSocket.on('playerEscolha', onPlayerEscolha);
 
     gameSocket.on('playerJoinGame', playerJoinGame);
 };
@@ -22,13 +23,18 @@ function hostCreateLobby() {
     this.join(thisGameId);
 }
 
-function onRoomFull(gameId) {
-    var sock;
-    var data = {
+function onRoomFull(data) {
+    //var sock = this;
+    /*var data = {
         mySocketId : sock.id,
         gameId : gameId
-    };
-    io.to(data.gameId).emit('beginGame', data);
+    };*/
+
+    var words = randomWords();
+
+    data.words = words;
+
+    io.emit('beginGame', data);
 }
 
 
@@ -46,6 +52,28 @@ function playerJoinGame(data) {
     //} else {
         //this.emit('error', {message: "This room does not exist."});
     //}
+}
+
+function onPlayerEscolha(data) {
+    wordPool.splice(wordPool.indexOf(data.escolha), 1);
+    io.emit('startRound', data);
+}
+
+//GAME LOGIC
+
+function randomWords() {
+    
+    var words = [];
+
+    for(var i = 0; i < 3; i++){
+        var word;
+        do {
+            word = wordPool[Math.floor(Math.random() * wordPool.length)];
+        } while (words.includes(word) === true);
+        words.push(word);
+    }
+
+    return words;
 }
 
 var wordPool = [

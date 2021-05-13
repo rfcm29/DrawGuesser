@@ -19,6 +19,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "jquery": "^3.6.0",
+    "responsive-sketchpad": "^1.2.2",
     "socket.io": "^4.1.0"
   }
 }
