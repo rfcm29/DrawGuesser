@@ -202,3 +202,14 @@ html, body{
     height: 100px;
     width: 100px;
 }
+
+.square{
+    height: 35px;
+    width: 35px;
+    background-color: black;
+}
+
+.wordLetters{
+    height: 15%;
+    display: flex;
+}
