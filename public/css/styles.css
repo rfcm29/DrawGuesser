@@ -207,9 +207,12 @@ html, body{
     height: 35px;
     width: 35px;
     background-color: black;
+    margin-right: 2px;
 }
 
 .wordLetters{
     height: 15%;
     display: flex;
+    align-items: center;
+    margin-left: 15px;
 }

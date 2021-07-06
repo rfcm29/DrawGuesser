@@ -13,6 +13,7 @@ var IO = {
         IO.socket.on('onDrawLine', IO.onDrawLine);
         IO.socket.on('error', IO.error);
         IO.socket.on('proximaRonda', IO.onProximaRonda);
+        IO.socket.on('acabarJogo', IO.onAcabarJogo);
     },
 
     onConnected : function(data) {
@@ -45,6 +46,10 @@ var IO = {
         App[App.myRole].proximaRonda();
     },
 
+    onAcabarJogo : function () {
+        App[App.myRole].acabarJogo();
+    },
+
     error : function(data) {
         alert(data.message);
     }
@@ -75,6 +80,7 @@ var App = {
         App.$playScreen = $('#play-screen').html();
         App.$guessScreen = $('#player-guess-template').html();
         App.$hostGame = $('#guess-word-template').html();
+        App.$endGame = $('#end-template').html();
     },
 
     paginaInicial : function() {
@@ -142,6 +148,27 @@ var App = {
 
         startRound : function() {
             App.$gameArea.html(App.$hostGame);
+            document.getElementById("player1").innerHTML = App.Host.players[0].playerName;
+            document.getElementById("player2").innerHTML = App.Host.players[1].playerName;
+            document.getElementById("player3").innerHTML = App.Host.players[2].playerName;
+
+            if(App.Host.currentPlayer === 0){
+                document.getElementById("player1dot").style.visibility = "hidden";
+            }
+            if(App.Host.currentPlayer === 1){
+                document.getElementById("player2dot").style.visibility = "hidden";
+            }
+            if(App.Host.currentPlayer === 2){
+                document.getElementById("player3dot").style.visibility = "hidden";
+            }
+
+            IO.socket.once('palavra', function (data) {
+                var letras = data.length;
+                for(var i = 0; i < letras; i++){
+                    document.getElementById('wordLetters').innerHTML += "<div class='square'/>";
+                }
+            });
+            
             this.desenha();
         },
 
@@ -158,9 +185,9 @@ var App = {
                 ctx.beginPath();
                 ctx.lineWidth = 5;
                 ctx.lineCap = "round";
-                ctx.strokeStyle = "#ACD3ED";
-                ctx.moveTo(data.ponto1.x * div.offsetWidth, data.ponto1.y * div.offsetHeight);
-                ctx.lineTo(data.ponto2.x * div.offsetWidth, data.ponto2.y * div.offsetHeight);
+                ctx.strokeStyle = data.cor;
+                ctx.moveTo(data.linha.ponto1.x * div.offsetWidth, data.linha.ponto1.y * div.offsetHeight);
+                ctx.lineTo(data.linha.ponto2.x * div.offsetWidth, data.linha.ponto2.y * div.offsetHeight);
                 ctx.stroke();
             });
         },
@@ -186,6 +213,22 @@ var App = {
                 };
                 IO.socket.emit('startRound', dados);
             }
+        },
+
+        acabarJogo : function () {
+            var vencedor;
+            if(App.Host.players[0].pontuacao > App.Host.players[1].pontuacao){
+                vencedor = App.Host.players[0];
+            } else {
+                vencedor = App.Host.players[1];
+            }
+
+            if(vencedor.pontuacao < App.Host.players[2].pontuacao){
+                vencedor = App.Host.players[2];
+            }
+
+            App.$gameArea.html(App.$endGame);
+            document.getElementById('vencedor').innerHTML = "O vencedor é " + vencedor.playerName + "!!!";
         }
     },
 
@@ -273,6 +316,8 @@ var App = {
             let coord = { x:0, y:0};
             const div = document.getElementById("left");
 
+            var cor = "#ACD3ED";
+
             let linha = {
                 ponto1: { x:0, y:0 },
                 ponto2: { x:0, y:0 }
@@ -283,7 +328,6 @@ var App = {
 
             ctx.canvas.width = div.offsetWidth;
             ctx.canvas.height = div.offsetHeight;
-            
 
             function start(event) {
                 canvas.addEventListener("mousemove", draw);
@@ -300,6 +344,12 @@ var App = {
             }
 
             function draw(event) {
+                //mudar entre desenhar e apagar
+                if($('#pencil').prop("checked")){
+                    cor = "#ACD3ED";
+                } else if($('#eraser').prop("checked")){
+                    cor = "#FFFFFF";
+                }
 
                 linha.ponto1.x = coord.x;
                 linha.ponto1.y = coord.y;
@@ -308,17 +358,18 @@ var App = {
                 linha.ponto2.x = coord.x;
                 linha.ponto2.y = coord.y;
                 
-
-                IO.socket.emit('drawLine', linha);
+                data = {linha: linha,
+                        cor: cor};
+                IO.socket.emit('drawLine', data);
             }
 
             IO.socket.on('drawLine', function(data) {
                 ctx.beginPath();
                 ctx.lineWidth = 5;
                 ctx.lineCap = "round";
-                ctx.strokeStyle = "#ACD3ED";
-                ctx.moveTo(data.ponto1.x * div.offsetWidth, data.ponto1.y * div.offsetHeight);
-                ctx.lineTo(data.ponto2.x * div.offsetWidth, data.ponto2.y * div.offsetHeight);
+                ctx.strokeStyle = data.cor;
+                ctx.moveTo(data.linha.ponto1.x * div.offsetWidth, data.linha.ponto1.y * div.offsetHeight);
+                ctx.lineTo(data.linha.ponto2.x * div.offsetWidth, data.linha.ponto2.y * div.offsetHeight);
                 ctx.stroke();
             });
         },
@@ -377,8 +428,8 @@ var App = {
             });
         },
 
-        acabaJogo : function() {
-            App.$gameArea.html(App.$paginaInicial);
+        acabarJogo : function () {
+            App.$gameArea.html(App.$endGame);
         }
     }
 };
