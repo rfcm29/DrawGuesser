@@ -80,6 +80,7 @@ var App = {
         App.$playScreen = $('#play-screen').html();
         App.$guessScreen = $('#player-guess-template').html();
         App.$hostGame = $('#guess-word-template').html();
+        App.$endGame = $('#end-template').html();
     },
 
     paginaInicial : function() {
@@ -147,6 +148,19 @@ var App = {
 
         startRound : function() {
             App.$gameArea.html(App.$hostGame);
+            document.getElementById("player1").innerHTML = App.Host.players[0].playerName;
+            document.getElementById("player2").innerHTML = App.Host.players[1].playerName;
+            document.getElementById("player3").innerHTML = App.Host.players[2].playerName;
+            if(App.Host.currentPlayer === 0){
+                document.getElementById("player1dot").style.visibility = "hidden";
+            }
+            if(App.Host.currentPlayer === 1){
+                document.getElementById("player2dot").style.visibility = "hidden";
+            }
+            if(App.Host.currentPlayer === 2){
+                document.getElementById("player3dot").style.visibility = "hidden";
+            }
+            
             this.desenha();
         },
 
@@ -191,6 +205,22 @@ var App = {
                 };
                 IO.socket.emit('startRound', dados);
             }
+        },
+
+        acabarJogo : function () {
+            var vencedor;
+            if(App.Host.players[0].pontuacao > App.Host.players[1].pontuacao){
+                vencedor = App.Host.players[0];
+            } else {
+                vencedor = App.Host.players[1];
+            }
+
+            if(vencedor.pontuacao < App.Host.players[2].pontuacao){
+                vencedor = App.Host.players[2];
+            }
+
+            App.$gameArea.html(App.$endGame);
+            document.getElementById('vencedor').innerHTML = "O vencedor é " + vencedor.playerName + "!!!";
         }
     },
 
@@ -390,8 +420,8 @@ var App = {
             });
         },
 
-        acabaJogo : function() {
-            App.$gameArea.html(App.$paginaInicial);
+        acabarJogo : function () {
+            App.$gameArea.html(App.$endGame);
         }
     }
 };
