@@ -45,6 +45,7 @@
     
         <script id="player-guess-template" type="text/template">
             <div class="writeWordWrapper">
+                <h1 id="texto"></h1>
                 <div class="guessAttempts">
                     <span class="dot" id="dot1"></span>
                     <span class="dot" id="dot2"></span>
@@ -64,7 +65,7 @@
             <div class="playerGuessWrapper">
                 <p class="word">BANANA</p>
                 <div class="guessArea">
-                    <div class="left">
+                    <div class="left" id="left">
                         <canvas id="guessCanvas"></canvas>
                     </div>
                     <div class="right">
@@ -116,8 +117,8 @@
             <div class="playerCanvasWrapper">
                 <div id="word" class="word">BANANA</div>
                 <div class="drawArea">
-                    <div class="left">
-                        <canvas id="drawCanvas"></canvas>
+                    <div class="left" id="left">
+                        <canvas class="drawCanvas" id="drawCanvas"></canvas>
                     </div>
                     <div class="right">
                         <p>COR</p>

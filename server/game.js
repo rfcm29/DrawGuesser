@@ -1,5 +1,7 @@
 var io;
 var gameSocket;
+var palavraAtual;
+var i = 0;
 
 exports.initGame = function(socketIo, socket){
     io = socketIo;
@@ -7,11 +9,44 @@ exports.initGame = function(socketIo, socket){
     gameSocket.emit('connected', { message: "You are connected!" });
 
     gameSocket.on('hostCreateLobby', hostCreateLobby);
-    gameSocket.on('roomFull', onRoomFull);
+    gameSocket.on('startRound', startRound);
     gameSocket.on('playerEscolha', onPlayerEscolha);
 
+    gameSocket.on('mouse', drawLine);
     gameSocket.on('playerJoinGame', playerJoinGame);
+
+    gameSocket.on('drawLine', onDrawLine);
+
+    gameSocket.on('advinhaPalavra', adivinhaPalavra);
+    gameSocket.on('acabarJogo', acabaJogo);
+
+    gameSocket.on('proximaRonda', proximaRonda);
 };
+
+
+function onDrawLine(data){
+
+    io.emit('drawLine', data);
+}
+
+function acabaJogo() {
+    io.emit('acabarJogo');
+}
+
+function proximaRonda(data){
+
+    if(data.errouTudo){
+        i += 1;
+        if(i == 2){
+            i = 0;
+            io.emit('proximaRonda');
+            return;
+        } 
+    } else {
+        io.emit('proximaRonda');
+    }
+    
+}
 
 //HOST
 
@@ -23,7 +58,7 @@ function hostCreateLobby() {
     this.join(thisGameId);
 }
 
-function onRoomFull(data) {
+function startRound(data) {
     //var sock = this;
     /*var data = {
         mySocketId : sock.id,
@@ -35,6 +70,10 @@ function onRoomFull(data) {
     data.words = words;
 
     io.emit('beginGame', data);
+}
+
+function drawLine(data){
+    io.to(this).emit('painter', data);
 }
 
 
@@ -54,8 +93,17 @@ function playerJoinGame(data) {
     //}
 }
 
+function adivinhaPalavra (data) {
+    if(palavraAtual === data){
+        io.emit('palavraCerta');
+    } else {
+        io.emit('palavraErrada');
+    }
+}
+
 function onPlayerEscolha(data) {
     wordPool.splice(wordPool.indexOf(data.escolha), 1);
+    palavraAtual = data.escolha;
     io.emit('startRound', data);
 }
 

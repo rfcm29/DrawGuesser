@@ -10,13 +10,15 @@ var IO = {
         IO.socket.on('playerJoinedRoom', IO.onPLayerJoinedRoom);
         IO.socket.on('beginGame', IO.onBeginGame);
         IO.socket.on('startRound', IO.onStartRound);
+        IO.socket.on('onDrawLine', IO.onDrawLine);
         IO.socket.on('error', IO.error);
+        IO.socket.on('proximaRonda', IO.onProximaRonda);
     },
 
     onConnected : function(data) {
         // Cache a copy of the client's socket.IO session ID on the App
         App.mySocketId = IO.socket.sessionid;
-        console.log(data.message);
+        //console.log(data.message);
     },
 
     onLobbyCreated : function(data) {
@@ -33,6 +35,14 @@ var IO = {
 
     onStartRound : function(data) {
         App[App.myRole].startRound(data);
+    },
+
+    onDrawLine : function(data){
+        App.Player.drawLine(data);
+    },
+
+    onProximaRonda : function(){
+        App[App.myRole].proximaRonda();
     },
 
     error : function(data) {
@@ -76,13 +86,15 @@ var App = {
         App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
         App.$doc.on('click', '#btnJoin', App.Player.onPlayerStartClick);
         App.$doc.on('click', '.btnEscolha', App.Player.onEscolha);
+        App.$doc.on('click', '#btnGuessWord', App.Player.adivinhaPalavra);
     },
 
     Host : {
         players: [],
         numPlayersInRoom: 0,
         isNewGame: false,
-        currentPlayer: 1,
+        currentPlayer: 0,
+        ronda: 0,
 
         onCreateClick : function() {
             IO.socket.emit('hostCreateLobby');
@@ -115,29 +127,77 @@ var App = {
 
             App.Host.players.push(data);
             App.Host.numPlayersInRoom += 1;
-
-            if(App.Host.numPlayersInRoom === 2) {
+            if(App.Host.numPlayersInRoom === 3) {
                 dados = { 
                     gameId : App.gameId,
                     playerAtual : App.Host.players[App.Host.currentPlayer]
                 };
-                IO.socket.emit('roomFull', dados);
+                IO.socket.emit('startRound', dados);
             }
         },
 
-        startGame : function(data) {
-            console.log(data);
+        startGame : function() {
             App.$gameArea.html(App.$waitScreen);
         },
 
-        startRound : function(data) {
+        startRound : function() {
             App.$gameArea.html(App.$hostGame);
+            this.desenha();
+        },
+
+        desenha : function() {
+
+            const canvas = document.getElementById("guessCanvas");
+            const ctx = canvas.getContext("2d");
+            const div = document.getElementById("left");
+
+            ctx.canvas.width = div.offsetWidth;
+            ctx.canvas.height = div.offsetHeight;
+
+            IO.socket.on('drawLine', function(data) {
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+                ctx.strokeStyle = "#ACD3ED";
+                ctx.moveTo(data.ponto1.x * div.offsetWidth, data.ponto1.y * div.offsetHeight);
+                ctx.lineTo(data.ponto2.x * div.offsetWidth, data.ponto2.y * div.offsetHeight);
+                ctx.stroke();
+            });
+        },
+
+        proximaRonda : function(){
+            if(App.Host.ronda === 3){
+                IO.socket.emit('acabarJogo');
+            }
+            if(App.Host.currentPlayer === 2){
+                console.log("ronda: ", App.Host.ronda);
+                App.Host.currentPlayer = 0;
+                App.Host.ronda += 1;
+                dados = { 
+                    gameId : App.gameId,
+                    playerAtual : App.Host.players[App.Host.currentPlayer]
+                };
+                IO.socket.emit('startRound', dados);
+            }else {
+                App.Host.currentPlayer += 1;
+                dados = { 
+                    gameId : App.gameId,
+                    playerAtual : App.Host.players[App.Host.currentPlayer]
+                };
+                IO.socket.emit('startRound', dados);
+            }
         }
     },
 
     Player : {
 
         myName : '',
+
+        data: {},
+
+        tentativas: 3,
+
+        pontuacao: 0,
 
         onJoinClick : function() {
             App.$gameArea.html(App.$joinLobby);
@@ -149,8 +209,6 @@ var App = {
                 playerName : $('#inputPlayerName').val()
             };
 
-            //console.log(data.gameId);
-
             IO.socket.emit('playerJoinGame', data);
 
             App.myRole = 'Player';
@@ -159,21 +217,17 @@ var App = {
 
         updateWaitingScreen : function(data) {
             if(IO.socket.sessionid === data.mySocketId){
-                App.myRole = 'Player';
                 App.gameId = data.gameId;
-                //console.log(data.gameId);
-                //console.log(data.mySocketId);
 
                 $('#playerWaitingMessage')
                     .append('<p/>')
                     .text('Joined Game ' + data.gameId + '. Please wait for game to begin.');
             }
-
-            //console.log(data.playerName);
         },
 
+        proximaRonda : function () {  },
+
         startGame : function(data) {
-            console.log(data);
 
             if(App.Player.myName === data.playerAtual.playerName){
                 App.$gameArea.html(App.$choseWord);
@@ -201,11 +255,11 @@ var App = {
         },
 
         startRound: function(data) {
+            App.Player.tentativas = 3;
             if(App.Player.myName === data.playerName){
                 App.$gameArea.html(App.$playScreen);
                 $('#word').text(data.escolha);
-                console.log(data.escolha);
-                App.Player.desenhar();
+                this.desenhar();
             }
             else {
                 App.$gameArea.html(App.$guessScreen);
@@ -213,28 +267,118 @@ var App = {
         },
 
         desenhar : function() {
-            document.addEventListener("DOMContentLoaded", function() {
-                var mouse = {
-                    click : false,
-                    move : false,
-                    pos : {x:0, y:0},
-                    pos_prev: false
-                };
 
-                var canvas = document.getElementById('drawCanvas');
-                var context = canvas.getContext('2d');
+            const canvas = document.getElementById("drawCanvas");
+            const ctx = canvas.getContext("2d");
+            let coord = { x:0, y:0};
+            const div = document.getElementById("left");
 
-                canvas.onmousedown = function(e){ mouse.click = true; };
-                canvas.onmouseup = function(e){ mouse.click = false; };
+            let linha = {
+                ponto1: { x:0, y:0 },
+                ponto2: { x:0, y:0 }
+            }
 
-                canvas.onmousemove = function(e){
-                    mouse.pos.x = e.clientX;
-                    mouse.pos.y = e.clientY;
-                    mouse.move = true;
-                };
+            canvas.addEventListener("mousedown", start);
+            canvas.addEventListener("mouseup", stop);
+
+            ctx.canvas.width = div.offsetWidth;
+            ctx.canvas.height = div.offsetHeight;
+            
+
+            function start(event) {
+                canvas.addEventListener("mousemove", draw);
+                reposition(event);
+            }
+
+            function reposition(event) {
+                coord.x = (event.clientX - ctx.canvas.offsetLeft) / div.offsetWidth;
+                coord.y = (event.clientY - ctx.canvas.offsetTop) / div.offsetHeight;
+            }
+
+            function stop() {
+                canvas.removeEventListener("mousemove", draw);
+            }
+
+            function draw(event) {
+
+                linha.ponto1.x = coord.x;
+                linha.ponto1.y = coord.y;
+                
+                reposition(event);
+                linha.ponto2.x = coord.x;
+                linha.ponto2.y = coord.y;
                 
 
+                IO.socket.emit('drawLine', linha);
+            }
+
+            IO.socket.on('drawLine', function(data) {
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+                ctx.strokeStyle = "#ACD3ED";
+                ctx.moveTo(data.ponto1.x * div.offsetWidth, data.ponto1.y * div.offsetHeight);
+                ctx.lineTo(data.ponto2.x * div.offsetWidth, data.ponto2.y * div.offsetHeight);
+                ctx.stroke();
             });
+        },
+
+        adivinhaPalavra : function () { 
+            
+            palavra = $('#inputGuessWord').val();
+
+            IO.socket.emit('advinhaPalavra', palavra);
+
+            IO.socket.once('palavraCerta', function() {
+                document.getElementById('btnGuessWord').style.visibility = 'hidden';
+                App.Player.pontuacao += 1;
+                data = {errouTudo: false};
+                IO.socket.emit('proximaRonda', data);
+                switch (App.Player.tentativas) {
+                    case 3:
+                        document.getElementById('dot1').style.backgroundColor = "green";
+                        document.getElementById('texto').innerHTML = "ACERTASTE!!!";
+                        break;
+                
+                    case 2:
+                        document.getElementById('dot2').style.backgroundColor = "green";
+                        document.getElementById('texto').innerHTML = "ACERTASTE!!!";
+                        break;
+
+                    case 1:
+                        document.getElementById('dot3').style.backgroundColor = "green";
+                        document.getElementById('texto').innerHTML = "ACERTASTE!!!";
+                        break;
+                }
+            });
+
+            IO.socket.once('palavraErrada', function () { 
+                document.getElementById('inputGuessWord').value = "";
+                switch (App.Player.tentativas) {
+                    case 3:
+                        document.getElementById('dot1').style.backgroundColor = "red";
+                        App.Player.tentativas = 2;
+                        break;
+                
+                    case 2:
+                        document.getElementById('dot2').style.backgroundColor = "red";
+                        App.Player.tentativas = 1;
+                        break;
+
+                    case 1:
+                        document.getElementById('dot3').style.backgroundColor = "red";
+                        document.getElementById('texto').innerHTML = "ESGOTASTE TODAS AS TENTATIVAS";
+                        document.getElementById('btnGuessWord').style.visibility = 'hidden';
+                        data = {errouTudo: true};
+                        IO.socket.emit('proximaRonda', data);
+                        App.Player.tentativas = 0;
+                        break;
+                }
+            });
+        },
+
+        acabaJogo : function() {
+            App.$gameArea.html(App.$paginaInicial);
         }
     }
 };
