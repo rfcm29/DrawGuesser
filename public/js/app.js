@@ -151,6 +151,7 @@ var App = {
             document.getElementById("player1").innerHTML = App.Host.players[0].playerName;
             document.getElementById("player2").innerHTML = App.Host.players[1].playerName;
             document.getElementById("player3").innerHTML = App.Host.players[2].playerName;
+
             if(App.Host.currentPlayer === 0){
                 document.getElementById("player1dot").style.visibility = "hidden";
             }
@@ -160,6 +161,13 @@ var App = {
             if(App.Host.currentPlayer === 2){
                 document.getElementById("player3dot").style.visibility = "hidden";
             }
+
+            IO.socket.once('palavra', function (data) {
+                var letras = data.length;
+                for(var i = 0; i < letras; i++){
+                    document.getElementById('wordLetters').innerHTML += "<div class='square'/>";
+                }
+            });
             
             this.desenha();
         },

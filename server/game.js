@@ -105,6 +105,7 @@ function onPlayerEscolha(data) {
     wordPool.splice(wordPool.indexOf(data.escolha), 1);
     palavraAtual = data.escolha;
     io.emit('startRound', data);
+    io.emit('palavra', palavraAtual);
 }
 
 //GAME LOGIC
