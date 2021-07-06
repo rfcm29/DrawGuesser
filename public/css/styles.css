@@ -53,7 +53,7 @@ html, body{
     text-align: center;
 }
 
-.newGameWrapper, .playerCanvasWrapper, .newWordWrapper, .playerGuessWrapper, .writeWordWrapper, .beginWrapper{
+.newGameWrapper, .playerCanvasWrapper, .newWordWrapper, .playerGuessWrapper, .writeWordWrapper, .beginWrapper, .endWrapper, .instrucoesWrapper{
     height: 100%;
     width: 96%;
     margin: auto;
@@ -184,7 +184,7 @@ html, body{
     font-size: 2vw;
 }
 
-.beginWrapper p{
+.beginWrapper p, .endWrapper p, .instrucoesWrapper p{
     font-size: 5vw;
     text-align: center;
 }
