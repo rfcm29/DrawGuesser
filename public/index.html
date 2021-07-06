@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -15,17 +15,17 @@
 
         <!-- The scripts go here! -->        
         
+                
+
+    </div>   
+
+    <script id="begin-template" type="text/template">
         <div class="beginWrapper">
             <div class="title">
                 <img src="img/logo.png"  width="60%">
             </div>
             <p>O JOGO VAI COMEÇAR!</p>
-        </div>        
-
-    </div>   
-
-    <script id="begin-template">
-
+        </div>
     </script>
 
     <script id="choose-word-template" type="text/template">
@@ -34,17 +34,18 @@
                 <img src="img/logo.png"  width="60%">
             </div>
             <div class="buttons">
-                <button id="btnGetWord1" class="btn">PALAVRA 1</button>
+                <button id="btnGetWord1" class="btnEscolha btn">PALAVRA 1</button>
                 <br>
-                <button id="btnGetWord2" class="btn">PALAVRA 2</button>
+                <button id="btnGetWord2" class="btnEscolha btn">PALAVRA 2</button>
                 <br>
-                <button id="btnGetWord3" class="btn">PALAVRA 3</button>
+                <button id="btnGetWord3" class="btnEscolha btn">PALAVRA 3</button>
             </div>
         </div>
     </script>
     
         <script id="player-guess-template" type="text/template">
             <div class="writeWordWrapper">
+                <h1 id="texto"></h1>
                 <div class="guessAttempts">
                     <span class="dot" id="dot1"></span>
                     <span class="dot" id="dot2"></span>
@@ -64,7 +65,7 @@
             <div class="playerGuessWrapper">
                 <p class="word">BANANA</p>
                 <div class="guessArea">
-                    <div class="left">
+                    <div class="left" id="left">
                         <canvas id="guessCanvas"></canvas>
                     </div>
                     <div class="right">
@@ -114,10 +115,10 @@
 
         <script id="play-screen" type="text/template">
             <div class="playerCanvasWrapper">
-                <p class="word">BANANA</p>
+                <div id="word" class="word">BANANA</div>
                 <div class="drawArea">
-                    <div class="left">
-                        <canvas id="drawCanvas"></canvas>
+                    <div class="left" id="left">
+                        <canvas class="drawCanvas" id="drawCanvas"></canvas>
                     </div>
                     <div class="right">
                         <p>COR</p>
@@ -144,11 +145,12 @@
                 </div>
                 <div class="right">
                     <p class="lobbyNum">NÚMERO DO LOBBY</p>
-                    <input id="inputLobbyNum" class="input" type="text"/>
+                    <input id="inputLobbyNum" type="text"/>
                     <p class="playerName">NOME DO JOGADOR</p>
-                    <input id="inputPlayerName" class="input" type="text"/>
+                    <input id="inputPlayerName" type="text"/>
                     <div class="buttons">
                         <button id="btnJoin" class="btn">COMEÇAR</button>
+                        <div id="playerWaitingMessage"></div>
                     </div>
                 </div>
             </div>
@@ -158,19 +160,11 @@
             <div class="newGameWrapper">
                 <div class="gameInfo">
                     <img src="img/logo.png"  width="50%">
-                    <p class="link">LINK PARA O TELEMOVEL</p>
-                    <p class="lobbyNum">NUMERO DO LOBBY</p>
+                    <p id="gameURL" class="link">LINK PARA O TELEMOVEL</p>
+                    <p id="lobbyNum" class="lobbyNum">NUMERO DO LOBBY</p>
                 </div>
-                <div class="lobbyUsers">
-                        <table class="userTable">
-                            <tr>
-                                <th>LOBBY X</th>
-                            </tr>
-        
-                            <tr>
-                                <td>USER Y</td>
-                            </tr>
-                        </table>
+                <div id="tableUsers" class="lobbyUsers">
+                    
                 </div>
                 <div class="buttons">
                     <button id="btnStartGame" class="btn">COMEÇAR</button>
@@ -194,10 +188,8 @@
             </div>
         </script> 
 
-    
-
-    
-
-    
+        <script src="libs/jquery-3.6.0.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/app.js"></script>
 </body>
 </html>
