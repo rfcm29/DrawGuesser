@@ -13,6 +13,7 @@ var IO = {
         IO.socket.on('onDrawLine', IO.onDrawLine);
         IO.socket.on('error', IO.error);
         IO.socket.on('proximaRonda', IO.onProximaRonda);
+        IO.socket.on('acabarJogo', IO.onAcabarJogo);
     },
 
     onConnected : function(data) {
@@ -43,6 +44,10 @@ var IO = {
 
     onProximaRonda : function(){
         App[App.myRole].proximaRonda();
+    },
+
+    onAcabarJogo : function () {
+        App[App.myRole].acabarJogo();
     },
 
     error : function(data) {
@@ -158,9 +163,9 @@ var App = {
                 ctx.beginPath();
                 ctx.lineWidth = 5;
                 ctx.lineCap = "round";
-                ctx.strokeStyle = "#ACD3ED";
-                ctx.moveTo(data.ponto1.x * div.offsetWidth, data.ponto1.y * div.offsetHeight);
-                ctx.lineTo(data.ponto2.x * div.offsetWidth, data.ponto2.y * div.offsetHeight);
+                ctx.strokeStyle = data.cor;
+                ctx.moveTo(data.linha.ponto1.x * div.offsetWidth, data.linha.ponto1.y * div.offsetHeight);
+                ctx.lineTo(data.linha.ponto2.x * div.offsetWidth, data.linha.ponto2.y * div.offsetHeight);
                 ctx.stroke();
             });
         },
@@ -273,6 +278,8 @@ var App = {
             let coord = { x:0, y:0};
             const div = document.getElementById("left");
 
+            var cor = "#ACD3ED";
+
             let linha = {
                 ponto1: { x:0, y:0 },
                 ponto2: { x:0, y:0 }
@@ -283,7 +290,6 @@ var App = {
 
             ctx.canvas.width = div.offsetWidth;
             ctx.canvas.height = div.offsetHeight;
-            
 
             function start(event) {
                 canvas.addEventListener("mousemove", draw);
@@ -300,6 +306,12 @@ var App = {
             }
 
             function draw(event) {
+                //mudar entre desenhar e apagar
+                if($('#pencil').prop("checked")){
+                    cor = "#ACD3ED";
+                } else if($('#eraser').prop("checked")){
+                    cor = "#FFFFFF";
+                }
 
                 linha.ponto1.x = coord.x;
                 linha.ponto1.y = coord.y;
@@ -308,17 +320,18 @@ var App = {
                 linha.ponto2.x = coord.x;
                 linha.ponto2.y = coord.y;
                 
-
-                IO.socket.emit('drawLine', linha);
+                data = {linha: linha,
+                        cor: cor};
+                IO.socket.emit('drawLine', data);
             }
 
             IO.socket.on('drawLine', function(data) {
                 ctx.beginPath();
                 ctx.lineWidth = 5;
                 ctx.lineCap = "round";
-                ctx.strokeStyle = "#ACD3ED";
-                ctx.moveTo(data.ponto1.x * div.offsetWidth, data.ponto1.y * div.offsetHeight);
-                ctx.lineTo(data.ponto2.x * div.offsetWidth, data.ponto2.y * div.offsetHeight);
+                ctx.strokeStyle = data.cor;
+                ctx.moveTo(data.linha.ponto1.x * div.offsetWidth, data.linha.ponto1.y * div.offsetHeight);
+                ctx.lineTo(data.linha.ponto2.x * div.offsetWidth, data.linha.ponto2.y * div.offsetHeight);
                 ctx.stroke();
             });
         },
